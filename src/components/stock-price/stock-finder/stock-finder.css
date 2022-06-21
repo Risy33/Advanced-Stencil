@@ -41,3 +41,22 @@ form button:disabled {
   color: white;
   cursor: not-allowed;
 }
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  margin: 0.25rem 0;
+  padding: 0.25;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+li:hover,
+li:active {
+  background: rgb(98, 38, 98);
+  color: white;
+}

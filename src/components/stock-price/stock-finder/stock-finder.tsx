@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, EventEmitter, h, State, Event } from '@stencil/core';
 import { DR_API_KEY } from '../../../global/global';
 
 @Component({
@@ -10,6 +10,8 @@ export class StockFinder {
   stockNameInput: HTMLInputElement;
 
   @State() searchResult: { symbol: string; name: string }[] = [];
+
+  @Event({ bubbles: true, composed: true }) ucSymbolSelected: EventEmitter<string>; //uc stands for unique
 
   onFindStocks(event: Event) {
     event.preventDefault();
@@ -24,6 +26,10 @@ export class StockFinder {
       .catch(err => console.log(err));
   }
 
+  onSelectSymbol(symbol: string) {
+    this.ucSymbolSelected.emit(symbol); //emit method allows you to "emit" an event, which causes all callbacks registered to the event to 'fire', (get called).
+  }
+
   render() {
     return [
       <form onSubmit={this.onFindStocks.bind(this)}>
@@ -32,7 +38,9 @@ export class StockFinder {
       </form>,
       <ul>
         {this.searchResult.map(result => (
-          <li>{result.name}</li>
+          <li onClick={this.onSelectSymbol.bind(this, result.symbol)}>
+            <strong>{result.symbol}</strong> - {result.name}
+          </li>
         ))}
       </ul>,
     ];
