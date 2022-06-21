@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface DrStockPrice {
+        "stockSymbol": string;
     }
 }
 declare global {
@@ -22,6 +23,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface DrStockPrice {
+        "stockSymbol"?: string;
     }
     interface IntrinsicElements {
         "dr-stock-price": DrStockPrice;
