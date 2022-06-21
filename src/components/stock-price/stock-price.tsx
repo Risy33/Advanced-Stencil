@@ -47,18 +47,17 @@ export class StockPrice {
   componentWillLoad() {
     console.log('component will load');
     console.log(this.stockSymbol);
-  }
-
-  componentDidLoad() {
-    //lifecycle hook
-    console.log('componentDidLoad');
-
     if (this.stockSymbol) {
       // this.initialStockSymbol = this.stockSymbol;
       this.stockUserinput = this.stockSymbol;
       this.stockInputValid = true;
       this.fetchStockPrice(this.stockSymbol);
     }
+  }
+
+  componentDidLoad() {
+    //lifecycle hook
+    console.log('componentDidLoad');
   }
 
   componentWillUpdate() {
