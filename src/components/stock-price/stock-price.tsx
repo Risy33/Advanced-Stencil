@@ -14,6 +14,7 @@ export class StockPrice {
   @State() stockUserinput: string;
   @State() stockInputValid = false;
   @State() error: string;
+  @State() loading = false;
 
   @Element() el: HTMLElement; //used to get access to our user input data when we are using querySelector
 
@@ -86,6 +87,7 @@ export class StockPrice {
   }
 
   fetchStockPrice(stockSymbol: string) {
+    this.loading = true;
     fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=${DR_API_KEY}`)
       .then(res => {
         if (res.status !== 200) {
@@ -99,10 +101,12 @@ export class StockPrice {
         }
         this.error = null;
         this.fetchedPrice = +parsedRes['Global Quote']['05. price'];
+        this.loading = false;
       }) //the + converts the string in to a number
       .catch(err => {
         this.error = err.message;
         this.fetchedPrice = null;
+        this.loading = false;
       });
   }
 
@@ -114,12 +118,22 @@ export class StockPrice {
     if (this.fetchedPrice) {
       dataContent = <p>Price: $ {this.fetchedPrice}</p>;
     }
+    if (this.loading) {
+      dataContent = (
+        <div class="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      );
+    }
 
     return (
       <Host class={this.error ? 'error' : ''}>
         <form onSubmit={this.onFetchStockPrice.bind(this)}>
           <input type="text" id="stock-symbol" ref={el => (this.stockInput = el)} value={this.stockUserinput} onInput={this.onUserInput.bind(this)} />
-          <button type="submit" disabled={!this.stockInputValid}>
+          <button type="submit" disabled={!this.stockInputValid || this.loading}>
             Fetch
           </button>
         </form>
