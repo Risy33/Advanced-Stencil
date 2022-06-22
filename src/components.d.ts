@@ -6,6 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface DrSpinner {
+    }
     interface DrStockFinder {
     }
     interface DrStockPrice {
@@ -17,6 +19,12 @@ export interface DrStockFinderCustomEvent<T> extends CustomEvent<T> {
     target: HTMLDrStockFinderElement;
 }
 declare global {
+    interface HTMLDrSpinnerElement extends Components.DrSpinner, HTMLStencilElement {
+    }
+    var HTMLDrSpinnerElement: {
+        prototype: HTMLDrSpinnerElement;
+        new (): HTMLDrSpinnerElement;
+    };
     interface HTMLDrStockFinderElement extends Components.DrStockFinder, HTMLStencilElement {
     }
     var HTMLDrStockFinderElement: {
@@ -30,11 +38,14 @@ declare global {
         new (): HTMLDrStockPriceElement;
     };
     interface HTMLElementTagNameMap {
+        "dr-spinner": HTMLDrSpinnerElement;
         "dr-stock-finder": HTMLDrStockFinderElement;
         "dr-stock-price": HTMLDrStockPriceElement;
     }
 }
 declare namespace LocalJSX {
+    interface DrSpinner {
+    }
     interface DrStockFinder {
         "onUcSymbolSelected"?: (event: DrStockFinderCustomEvent<string>) => void;
     }
@@ -42,6 +53,7 @@ declare namespace LocalJSX {
         "stockSymbol"?: string;
     }
     interface IntrinsicElements {
+        "dr-spinner": DrSpinner;
         "dr-stock-finder": DrStockFinder;
         "dr-stock-price": DrStockPrice;
     }
@@ -50,6 +62,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "dr-spinner": LocalJSX.DrSpinner & JSXBase.HTMLAttributes<HTMLDrSpinnerElement>;
             "dr-stock-finder": LocalJSX.DrStockFinder & JSXBase.HTMLAttributes<HTMLDrStockFinderElement>;
             "dr-stock-price": LocalJSX.DrStockPrice & JSXBase.HTMLAttributes<HTMLDrStockPriceElement>;
         }

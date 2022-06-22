@@ -119,14 +119,7 @@ export class StockPrice {
       dataContent = <p>Price: $ {this.fetchedPrice}</p>;
     }
     if (this.loading) {
-      dataContent = (
-        <div class="lds-ring">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      );
+      dataContent = <dr-spinner></dr-spinner>;
     }
 
     return (

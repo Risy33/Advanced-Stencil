@@ -11,10 +11,13 @@ export class StockFinder {
 
   @State() searchResult: { symbol: string; name: string }[] = [];
 
+  @State() loading = false;
+
   @Event({ bubbles: true, composed: true }) ucSymbolSelected: EventEmitter<string>; //uc stands for unique
 
   onFindStocks(event: Event) {
     event.preventDefault();
+    this.loading = true;
     const stockName = this.stockNameInput.value;
     fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${stockName}&apikey=${DR_API_KEY}`)
       .then(res => res.json())
@@ -22,8 +25,13 @@ export class StockFinder {
         this.searchResult = parsedRes['bestMatches'].map(match => {
           return { name: match['2. name'], symbol: match['1. symbol'] };
         });
+
+        this.loading = false;
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        this.loading = false;
+      });
   }
 
   onSelectSymbol(symbol: string) {
@@ -31,18 +39,24 @@ export class StockFinder {
   }
 
   render() {
-    return [
-      <form onSubmit={this.onFindStocks.bind(this)}>
-        <input type="text" id="stock-symbol" ref={el => (this.stockNameInput = el)} />
-        <button type="submit">Find!</button>
-      </form>,
+    let content = (
       <ul>
         {this.searchResult.map(result => (
           <li onClick={this.onSelectSymbol.bind(this, result.symbol)}>
             <strong>{result.symbol}</strong> - {result.name}
           </li>
         ))}
-      </ul>,
+      </ul>
+    );
+    if (this.loading) {
+      content = <dr-spinner />;
+    }
+    return [
+      <form onSubmit={this.onFindStocks.bind(this)}>
+        <input type="text" id="stock-symbol" ref={el => (this.stockNameInput = el)} />
+        <button type="submit">Find!</button>
+      </form>,
+      content,
     ];
   }
 }

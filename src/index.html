@@ -4,14 +4,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>Stencil Component Starter</title>
-
+    <style>
+      html {
+        --color-primary: rgb(98, 38, 98);
+        --color-primary-inverse: white;
+        --color-primary-highlight: #750175;
+      }
+    </style>
     <script type="module" src="/build/stenciljsadavnce.esm.js"></script>
     <script nomodule src="/build/stenciljsadavnce.js"></script>
   </head>
   <body>
     <dr-stock-price stock-symbol="AAPL"></dr-stock-price>
     <dr-stock-finder></dr-stock-finder>
-<!-- 
+
+    <!-- 
     <script>
       const stockFinderEl = document.querySelector('dr-stock-finder');
       stockFinderEl.addEventListener('ucSymbolSelected', event => {
