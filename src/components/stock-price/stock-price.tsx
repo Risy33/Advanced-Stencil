@@ -1,4 +1,4 @@
-import { Component, Element, Prop, State, Watch } from '@stencil/core';
+import { Component, Element, Listen, Prop, State, Watch, Host } from '@stencil/core';
 import { h } from '@stencil/core';
 import { DR_API_KEY } from '../../global/global';
 
@@ -23,6 +23,7 @@ export class StockPrice {
   stockSymbolChanged(newValue: string, oldValue: string) {
     if (newValue !== oldValue) {
       this.stockUserinput = newValue;
+      this.stockInputValid = true;
       this.fetchStockPrice(newValue);
     }
   }
@@ -76,6 +77,14 @@ export class StockPrice {
     console.log('componenDidUnload');
   }
 
+  @Listen('ucSymbolSelected', { target: 'body' })
+  onStockSymbolSelected(event: CustomEvent) {
+    console.log('stock symbol selected: ' + event.detail);
+    if (event.detail && event.detail !== this.stockSymbol) {
+      this.stockSymbol = event.detail;
+    }
+  }
+
   fetchStockPrice(stockSymbol: string) {
     fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=${DR_API_KEY}`)
       .then(res => {
@@ -93,6 +102,7 @@ export class StockPrice {
       }) //the + converts the string in to a number
       .catch(err => {
         this.error = err.message;
+        this.fetchedPrice = null;
       });
   }
 
@@ -105,14 +115,16 @@ export class StockPrice {
       dataContent = <p>Price: $ {this.fetchedPrice}</p>;
     }
 
-    return [
-      <form onSubmit={this.onFetchStockPrice.bind(this)}>
-        <input type="text" id="stock-symbol" ref={el => (this.stockInput = el)} value={this.stockUserinput} onInput={this.onUserInput.bind(this)} />
-        <button type="submit" disabled={!this.stockInputValid}>
-          Fetch
-        </button>
-      </form>,
-      <div>{dataContent}</div>,
-    ];
+    return (
+      <Host class={this.error ? 'error' : ''}>
+        <form onSubmit={this.onFetchStockPrice.bind(this)}>
+          <input type="text" id="stock-symbol" ref={el => (this.stockInput = el)} value={this.stockUserinput} onInput={this.onUserInput.bind(this)} />
+          <button type="submit" disabled={!this.stockInputValid}>
+            Fetch
+          </button>
+        </form>
+        <div>{dataContent}</div>
+      </Host>
+    );
   }
 }
